@@ -9,56 +9,54 @@ public class Player : MonoBehaviour
     public GameObject bombPrefab;
     public Transform bombsTransform;
 
-    private Vector3 playerVelocity = new (0.01f, 0.01f);
+    private Vector3 playerVelocity;
+
+    public float accelerationTime = 3.0f;
+    public float maxSpeed = 5.0f;
+
+    private float acceleration;
+
+    void Start()
+    {
+        acceleration = maxSpeed / accelerationTime;
+    }
 
     void Update()
     {
+        // Task 1
         PlayerMovement();
     }
 
+    // Task 1
     void PlayerMovement()
     {
+        Vector3 direction = Vector3.zero;
+
         // Velocity movement for player keys
         if (Input.GetKey(KeyCode.LeftArrow))
         {
-            transform.position -= new Vector3(playerVelocity.x, 0.0f);
+            direction += Vector3.left;
         }
 
         else if (Input.GetKey(KeyCode.RightArrow))
         {
-            transform.position += new Vector3(playerVelocity.x, 0.0f);
+            direction += Vector3.right;
         }
 
         else if (Input.GetKey(KeyCode.DownArrow))
         {
-            transform.position -= new Vector3(0.0f, playerVelocity.y);
+            direction += Vector3.down;
         }
 
         else if (Input.GetKey(KeyCode.UpArrow))
         {
-            transform.position += new Vector3(0.0f, playerVelocity.y);
+            direction += Vector3.up;
         }
 
-        // Clamp the player from going past the screen limits manually
-        if (transform.position.x >= 9.0f)
-        {
-            transform.position = new (9.0f, transform.position.y);
-        }
+        direction.Normalize();
 
-        else if (transform.position.x <= -9.0f)
-        {
-            transform.position = new (-9.0f, transform.position.y);
-        }
-
-        if (transform.position.y >= 9.5f)
-        {
-            transform.position = new (transform.position.x, 9.5f);
-        }
-
-        else if (transform.position.y <= -9.5f)
-        {
-            transform.position = new (transform.position.x, -9.5f);
-        }
+        playerVelocity += acceleration * Time.deltaTime * direction;
+        transform.position += playerVelocity * Time.deltaTime;
     }
 
 }
