@@ -29,11 +29,12 @@ public class Asteroid : MonoBehaviour
         // If the asteroid doesn't know which point to go to
         if (hasDecidedToMove == false)
         {
-            // Set the random point vector to randomize the points for the asteroid to go to
-            randomPoint = new(Random.Range(-9, 9), Random.Range(-9, 9));
+            float asteroidMaxFloatDistancePointX = transform.position.x + maxFloatDistance;
+            float asteroidMaxFloatDistancePointY = transform.position.y + maxFloatDistance;
 
-            // Set the arrival distance to 0 because we haven't arrived at the destination yet
-            arrivalDistance = 0.0f;
+            // Set the random point vector to randomize the points for the asteroid to go to using max distance value
+            randomPoint = new(Random.Range(-asteroidMaxFloatDistancePointX, asteroidMaxFloatDistancePointX), 
+                Random.Range(-asteroidMaxFloatDistancePointY, asteroidMaxFloatDistancePointY));
 
             // Because the asteroid has a random point to move to, we can set this to true
             hasDecidedToMove = true;
@@ -45,15 +46,9 @@ public class Asteroid : MonoBehaviour
             // Move the asteroids to their random points at their move speed value
             transform.position += (randomPoint - transform.position) * moveSpeed * Time.deltaTime;
 
-            // Increment the arrival distance to know the asteroid will be arriving at the random point
-            arrivalDistance += (maxFloatDistance - arrivalDistance) * moveSpeed * Time.deltaTime;
-
-            // If the arrival distance is greater than the max float distance
-            if (arrivalDistance >= maxFloatDistance - 0.001f)
+            // If the distance between the asteroid and the random point is equal to the arrival distance
+            if (Vector2.Distance(transform.position, randomPoint) <= arrivalDistance)
             {
-                // Constrain the arrival distance to equal to the max distance so that it can't exceed the random point
-                arrivalDistance = maxFloatDistance;
-
                 // Set this to false so the asteroid can move to a new random point
                 hasDecidedToMove = false;
             }
