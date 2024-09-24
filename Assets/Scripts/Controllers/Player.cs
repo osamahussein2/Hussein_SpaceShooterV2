@@ -17,13 +17,10 @@ public class Player : MonoBehaviour
     private float acceleration;
 
     public float decelerationTime = 3.0f;
-    private float deceleration;
 
     void Start()
     {
-        acceleration = maxSpeed / accelerationTime;
-
-        deceleration = -maxSpeed / decelerationTime;
+        acceleration = 0.0f;
     }
 
     void Update()
@@ -40,46 +37,46 @@ public class Player : MonoBehaviour
         // Velocity movement for player keys
         if (Input.GetKey(KeyCode.LeftArrow))
         {
-            direction += Vector3.left;
-
             acceleration = maxSpeed / accelerationTime;
+
+            direction += Vector3.left;
         }
 
         else if (Input.GetKey(KeyCode.RightArrow))
         {
-            direction += Vector3.right;
-
             acceleration = maxSpeed / accelerationTime;
+
+            direction += Vector3.right;
         }
 
         else if (Input.GetKey(KeyCode.DownArrow))
         {
-            direction += Vector3.down;
-
             acceleration = maxSpeed / accelerationTime;
+
+            direction += Vector3.down;
         }
 
         else if (Input.GetKey(KeyCode.UpArrow))
         {
-            direction += Vector3.up;
-
             acceleration = maxSpeed / accelerationTime;
+
+            direction += Vector3.up;
         }
 
-        direction.Normalize();
+        acceleration -= maxSpeed / decelerationTime * Time.deltaTime;
 
-        if (direction == Vector3.zero)
+        if (acceleration <= 0.0f)
         {
-            acceleration -= maxSpeed / decelerationTime;
-
-            if (acceleration <= 0.0f)
-            {
-                acceleration = 0.0f;
-            }
+            acceleration = 0.0f;
         }
 
-        playerVelocity += acceleration * Time.deltaTime * direction;
-        transform.position += playerVelocity * Time.deltaTime;
+        else if (acceleration > 0.0f)
+        {
+            direction.Normalize();
+
+            playerVelocity += acceleration * Time.deltaTime * direction;
+            transform.position += playerVelocity * Time.deltaTime;
+        }
     }
 
 }
